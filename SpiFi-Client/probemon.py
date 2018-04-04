@@ -11,8 +11,8 @@ from pprint import pprint
 from logging.handlers import RotatingFileHandler
 
 
-NAME = 'probemon'
-DESCRIPTION = "a command line tool for logging 802.11 probe request frames"
+NAME = 'spifi'
+DESCRIPTION = "a tool for logging the number of unique 802.11 devices in an area"
 
 DEBUG = False
 
