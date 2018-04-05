@@ -119,8 +119,8 @@ def main():
 
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
-	reporter_args = [reporter, args.report_interval, args.log, args.time]
-	rt = RepeatedTimer(20, report, reporter_args)
+	#reporter_args = [reporter, args.report_interval, args.log, args.time]
+	rt = RepeatedTimer(20, report, reporter, args.report_interval, args.log, args.time)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 
