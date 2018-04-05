@@ -29,7 +29,7 @@ def report(reporter, seconds, live, time_fmt, delimiter):
 		log_time = datetime.now().isoformat()
 
 	fields.append(log_time)
-	fields.append(len(macSet))
+	fields.append(str(len(macSet)))
 	reporter.info(delimiter.join(fields))
 	macSet.clear()
 
@@ -119,7 +119,7 @@ def main():
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
 	#reporter_args = [reporter, args.report_interval, args.log, args.time]
-	rt = RepeatedTimer(20, report, reporter, args.report_interval, args.log, args.time, args.delimiter)
+	rt = RepeatedTimer(args.report_interval, report, reporter, args.report_interval, args.log, args.time, args.delimiter)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 
