@@ -92,7 +92,7 @@ def main():
 	parser.add_argument('-r', '--rssi', action='store_true', help="include rssi in output")
 	parser.add_argument('-D', '--debug', action='store_true', help="enable debug output")
 	parser.add_argument('-l', '--log', action='store_true', help="enable scrolling live view of the logfile")
-	parser.add_argument('-I', '--report-interval', default='60', help="time in seconds between reports")
+	parser.add_argument('-I', '--report-interval', default=60, help="time in seconds between reports")
 	args = parser.parse_args()
 
 	if not args.interface:
@@ -108,13 +108,14 @@ def main():
 	logger.addHandler(handler)
 
 	#setup report logger
-	reporter = logging.getLogger(NAME)
+	reporter = logging.getLogger(NAME + "_reports")
 	reporter.setLevel(logging.INFO)
-	reportHandler = RotatingFileHandler(args.output, maxBytes=args.max_bytes, backupCount=args.max_backups)
+	reportHandler = RotatingFileHandler(args.report_output, maxBytes=args.max_bytes, backupCount=args.max_backups)
 	reporter.addHandler(reportHandler)
 
 	if args.log:
 		logger.addHandler(logging.StreamHandler(sys.stdout))
+		reporter.addHandler(logging.StreamHandler(sys.stdout))
 
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
