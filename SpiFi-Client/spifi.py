@@ -17,7 +17,7 @@ DESCRIPTION = "a tool for logging the number of unique 802.11 devices in an area
 
 DEBUG = False
 
-seen_macs = {}
+macSet = set()
 
 def report(reporter, seconds, live, time_fmt, delimiter):
 	# list of output fields
@@ -29,9 +29,9 @@ def report(reporter, seconds, live, time_fmt, delimiter):
 		log_time = datetime.now().isoformat()
 
 	fields.append(log_time)
-	fields.append(seen_macs.length)
+	fields.append(len(macSet))
 	reporter.info(delimiter.join(fields))
-	seen_macs.clear()
+	macSet.clear()
 
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 	def packet_callback(packet):
@@ -41,7 +41,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 		# we are looking for management frames with a probe subtype
 		# if neither match we are done here
-		if packet.type != 0 or packet.subtype != 0x04 or packet.addr2 in seen_macs:
+		if packet.type != 0 or packet.subtype != 0x04 or packet.addr2 in macSet:
 			return
 
 		# list of output fields
@@ -56,7 +56,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 		# append the mac address itself
 		fields.append(packet.addr2)
-		seen_macs[packet.addr2]
+		macSet.add(packet.addr2)
 
 		# parse mac address and look up the organization from the vendor octets
 		if mac_info:
