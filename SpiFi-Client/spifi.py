@@ -20,9 +20,6 @@ DEBUG = False
 seen_macs = {}
 
 def report(reporter, seconds, live, time_fmt, delimiter):
-	print("seconds: " + str(seconds))
-	print(live)
-	print(time_fmt)
 	# list of output fields
 	fields = []
 
