@@ -19,21 +19,22 @@ DEBUG = False
 
 seen_macs = {}
 
-def report(reporter, seconds, live, time_fmt):
+def report(reporter, seconds, live, time_fmt, delimiter):
 	print("seconds: " + str(seconds))
 	print(live)
 	print(time_fmt)
 	# list of output fields
-	#fields = []
+	fields = []
 
 	# determine preferred time format 
-	#log_time = str(int(time.time()))
-	#if time_fmt == 'iso':
-	#	log_time = datetime.now().isoformat()
+	log_time = str(int(time.time()))
+	if time_fmt == 'iso':
+		log_time = datetime.now().isoformat()
 
-	#fields.append(log_time)
-	#reporter.info()
-	#seen_macs.clear()
+	fields.append(log_time)
+	fields.append(seen_macs.length)
+	reporter.info(delimiter.join(fields))
+	seen_macs.clear()
 
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 	def packet_callback(packet):
@@ -43,7 +44,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 		# we are looking for management frames with a probe subtype
 		# if neither match we are done here
-		if packet.type != 0 or packet.subtype != 0x04:
+		if packet.type != 0 or packet.subtype != 0x04 or packet.addr2 in seen_macs:
 			return
 
 		# list of output fields
@@ -58,6 +59,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 		# append the mac address itself
 		fields.append(packet.addr2)
+		seen_macs[packet.addr2]
 
 		# parse mac address and look up the organization from the vendor octets
 		if mac_info:
@@ -120,7 +122,7 @@ def main():
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
 	#reporter_args = [reporter, args.report_interval, args.log, args.time]
-	rt = RepeatedTimer(20, report, reporter, args.report_interval, args.log, args.time)
+	rt = RepeatedTimer(20, report, reporter, args.report_interval, args.log, args.time, args.delimiter)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 
