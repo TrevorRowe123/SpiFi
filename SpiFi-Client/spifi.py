@@ -3,7 +3,7 @@
 import threading
 import time
 import datetime
-import configparser
+import ConfigParser
 import argparse
 import netaddr
 import sys
@@ -15,7 +15,7 @@ from logging.handlers import RotatingFileHandler
 NAME = 'spifi'
 DESCRIPTION = "a tool for logging the number of unique 802.11 devices in an area over time"
 
-config = configparser.SafeConfigParser()
+config = ConfigParser.SafeConfigParser()
 
 macSet = set()
 
