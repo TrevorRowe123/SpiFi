@@ -90,22 +90,22 @@ def main():
     # setting up arguments
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-i', '--interface', help="capture interface")
-    parser.add_argument('-t', '--time', default=config.get('Spifi', 'time'), help="output time format (unix, iso)")
-    parser.add_argument('-o', '--output', default=config.get('Spifi', 'output'), help="logging output location")
-    parser.add_argument('-O', '--report-output', default=config.get('Spifi', 'report_output'),
+    parser.add_argument('-t', '--time', default=config.get('SpiFi', 'time'), help="output time format (unix, iso)")
+    parser.add_argument('-o', '--output', default=config.get('SpiFi', 'output'), help="logging output location")
+    parser.add_argument('-O', '--report-output', default=config.get('SpiFi', 'report_output'),
                         help="report output location")
-    parser.add_argument('-b', '--max-bytes', default=config.get('Spifi', 'max_bytes'),
+    parser.add_argument('-b', '--max-bytes', default=config.get('SpiFi', 'max_bytes'),
                         help="maximum log size in bytes before rotating")
-    parser.add_argument('-c', '--max-backups', default=config.get('Spifi', 'max_backups'),
+    parser.add_argument('-c', '--max-backups', default=config.get('SpiFi', 'max_backups'),
                         help="maximum number of log files to keep")
-    parser.add_argument('-d', '--delimiter', default=config.get('Spifi', 'delimiter'), help="output field delimiter")
-    parser.add_argument('-f', '--mac-info', default=config.get('Spifi', 'mac_info'),
+    parser.add_argument('-d', '--delimiter', default=config.get('SpiFi', 'delimiter'), help="output field delimiter")
+    parser.add_argument('-f', '--mac-info', default=config.get('SpiFi', 'mac_info'),
                         help="include MAC address manufacturer")
-    parser.add_argument('-s', '--ssid', default=config.get('Spifi', 'ssid'), help="include probe SSID in output")
-    parser.add_argument('-r', '--rssi', default=config.get('Spifi', 'rssi'), help="include rssi in output")
-    parser.add_argument('-l', '--log', default=config.get('Spifi', 'log'),
+    parser.add_argument('-s', '--ssid', default=config.get('SpiFi', 'ssid'), help="include probe SSID in output")
+    parser.add_argument('-r', '--rssi', default=config.get('SpiFi', 'rssi'), help="include rssi in output")
+    parser.add_argument('-l', '--log', default=config.get('SpiFi', 'log'),
                         help="enable scrolling live view of the logfile")
-    parser.add_argument('-I', '--report-interval', default=config.get('Spifi', 'report_interval'),
+    parser.add_argument('-I', '--report-interval', default=config.get('SpiFi', 'report_interval'),
                         help="time in seconds between reports")
     args = parser.parse_args()
 
