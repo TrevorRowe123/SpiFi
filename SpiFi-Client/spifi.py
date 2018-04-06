@@ -3,6 +3,7 @@
 import threading
 import time
 import datetime
+import configparser
 import argparse
 import netaddr
 import sys
@@ -14,7 +15,7 @@ from logging.handlers import RotatingFileHandler
 NAME = 'spifi'
 DESCRIPTION = "a tool for logging the number of unique 802.11 devices in an area over time"
 
-DEBUG = False
+config = configparser.SafeConfigParser()
 
 macSet = set()
 
@@ -81,27 +82,37 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 
 def main():
+
+    # reading config files
+    config.readfp(open('defaults.cfg'))
+    config.read('spifi.cfg')
+
+    # setting up arguments
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-i', '--interface', help="capture interface")
-    parser.add_argument('-t', '--time', default='iso', help="output time format (unix, iso)")
-    parser.add_argument('-o', '--output', default='/dev/null', help="logging output location")
-    parser.add_argument('-O', '--report-output', default='reports.log', help="report output location")
-    parser.add_argument('-b', '--max-bytes', default=5000000, help="maximum log size in bytes before rotating")
-    parser.add_argument('-c', '--max-backups', default=99999, help="maximum number of log files to keep")
-    parser.add_argument('-d', '--delimiter', default='\t', help="output field delimiter")
-    parser.add_argument('-f', '--mac-info', action='store_true', help="include MAC address manufacturer")
-    parser.add_argument('-s', '--ssid', action='store_true', help="include probe SSID in output")
-    parser.add_argument('-r', '--rssi', action='store_true', help="include rssi in output")
-    parser.add_argument('-D', '--debug', action='store_true', help="enable debug output")
-    parser.add_argument('-l', '--log', action='store_true', help="enable scrolling live view of the logfile")
-    parser.add_argument('-I', '--report-interval', default=60, help="time in seconds between reports")
+    parser.add_argument('-t', '--time', default=config.get('Spifi', 'time'), help="output time format (unix, iso)")
+    parser.add_argument('-o', '--output', default=config.get('Spifi', 'output'), help="logging output location")
+    parser.add_argument('-O', '--report-output', default=config.get('Spifi', 'report_output'),
+                        help="report output location")
+    parser.add_argument('-b', '--max-bytes', default=config.get('Spifi', 'max_bytes'),
+                        help="maximum log size in bytes before rotating")
+    parser.add_argument('-c', '--max-backups', default=config.get('Spifi', 'max_backups'),
+                        help="maximum number of log files to keep")
+    parser.add_argument('-d', '--delimiter', default=config.get('Spifi', 'delimiter'), help="output field delimiter")
+    parser.add_argument('-f', '--mac-info', default=config.get('Spifi', 'mac_info'),
+                        help="include MAC address manufacturer")
+    parser.add_argument('-s', '--ssid', default=config.get('Spifi', 'ssid'), help="include probe SSID in output")
+    parser.add_argument('-r', '--rssi', default=config.get('Spifi', 'rssi'), help="include rssi in output")
+    parser.add_argument('-l', '--log', default=config.get('Spifi', 'log'),
+                        help="enable scrolling live view of the logfile")
+    parser.add_argument('-I', '--report-interval', default=config.get('Spifi', 'report_interval'),
+                        help="time in seconds between reports")
     args = parser.parse_args()
 
     if not args.interface:
         print "error: capture interface not given, try --help"
         sys.exit(-1)
 
-    DEBUG = args.debug
 
     # setup our rotating logger
     logger = logging.getLogger(NAME)
