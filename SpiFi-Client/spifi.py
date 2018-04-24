@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+## @file spifi.py
+# @brief a tool for logging the number of unique 802.11 devices in an area over time
+
 import threading
 import time
 import datetime
@@ -19,6 +22,11 @@ config = ConfigParser.RawConfigParser()
 
 macSet = set()
 
+## @fn report(time_fmt, reporter, delimiter)
+# @brief Saves report info
+# @param time_fmt
+# @param reporter
+# @param delimiter
 
 def report(time_fmt, reporter, delimiter):
     # list of output fields
@@ -33,7 +41,6 @@ def report(time_fmt, reporter, delimiter):
     fields.append(str(len(macSet)))
     reporter.info(delimiter.join(fields))
     macSet.clear()
-
 
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
     def packet_callback(packet):
@@ -138,9 +145,16 @@ def main():
     sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 
-# This class is used to run reports periodically.
+## @class RepeatedTimer(object)
+# @brief This class is used to run reports periodically.
 # Credit to Stackoverflow user "eraoul". https://stackoverflow.com/a/40965385
 class RepeatedTimer(object):
+	## The constructor
+	# @param self The object pointer
+	# @param interval Interval for timer
+	# @param function Use of the timer
+	# @param *args Args
+	# @param **kwargs Lookup parameters
     def __init__(self, interval, function, *args, **kwargs):
         self._timer = None
         self.interval = interval
@@ -151,11 +165,15 @@ class RepeatedTimer(object):
         self.next_call = time.time()
         self.start()
 
+	## Runs repeated timer
+	# @param self The object pointer
     def _run(self):
         self.is_running = False
         self.start()
         self.function(*self.args, **self.kwargs)
 
+	## Starts repeated timer
+	# @param self The object pointer
     def start(self):
         if not self.is_running:
             self.next_call += self.interval
@@ -163,6 +181,8 @@ class RepeatedTimer(object):
             self._timer.start()
             self.is_running = True
 
+	##Stops repeated timer
+	# @param self The object pointer
     def stop(self):
         self._timer.cancel()
         self.is_running = False
